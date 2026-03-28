@@ -1,10 +1,43 @@
-# BreakMyBot
+<div align="center">
+  <h1>BreakMyBot</h1>
+  <p><strong>Stress test your AI API before production.</strong></p>
+  <p>
+    An open-source CLI for finding instability, schema failures, malformed
+    responses, and edge-case breakdowns in single-call AI endpoints.
+  </p>
+  <p>
+    <a href="https://www.breakmybot.com">Website</a>
+    ·
+    <a href="https://www.breakmybot.com/docs/quickstart">Quickstart</a>
+    ·
+    <a href="https://github.com/Yogeshwar-CM/BreakMyBot/issues">Issues</a>
+  </p>
+  <p>
+    <img alt="CI" src="https://img.shields.io/github/actions/workflow/status/Yogeshwar-CM/BreakMyBot/ci.yml?branch=main&label=ci" />
+    <img alt="License" src="https://img.shields.io/github/license/Yogeshwar-CM/BreakMyBot" />
+    <img alt="Python" src="https://img.shields.io/badge/python-3.11%2B-0f172a" />
+    <img alt="Status" src="https://img.shields.io/badge/status-CLI%20scaffold-334155" />
+  </p>
+</div>
 
-BreakMyBot is an open-source CLI for stress testing single-call AI APIs before production.
+## What is BreakMyBot?
 
-It is built for endpoints like scorers, classifiers, extractors, moderation APIs, structured JSON generators, and evaluators. The goal is simple: run repeated and mutated tests locally so you can catch reliability failures before real traffic does.
+BreakMyBot is a CLI-first developer tool for stress testing single-call AI APIs.
 
-## What it helps find
+You point it at an external endpoint, define a request template, describe the
+response shape you expect, and run repeated or mutated tests locally to expose
+where the API becomes unreliable.
+
+It is built for endpoints like:
+
+- scorers
+- classifiers
+- extractors
+- moderation APIs
+- structured JSON generators
+- evaluators and judges
+
+## What does it help find?
 
 - inconsistent outputs across repeated runs
 - schema mismatches and missing fields
@@ -12,19 +45,25 @@ It is built for endpoints like scorers, classifiers, extractors, moderation APIs
 - sensitivity to small input changes
 - edge-case breakdowns on short, noisy, empty, or ambiguous inputs
 
-## What it is not for
+## What is it not for?
 
 - multi-turn chat systems
 - browser automation
 - chatbot UI scraping
 - full agent workflows
 
-## Installation
+## How it works
+
+1. Define a YAML config with the endpoint, headers, request template, and sample inputs.
+2. Run `breakmybot test config.yaml`.
+3. Inspect the failures, instability, and schema issues before production traffic hits the API.
+
+## Quickstart
 
 Requirements:
 
 - Python 3.11+
-- Node.js 20+ if you want to run the docs site locally
+- Node.js 20+ only if you want to run the docs site locally
 
 Install the CLI from source:
 
@@ -34,15 +73,13 @@ source .venv/bin/activate
 pip install -e .
 ```
 
-## Quickstart
-
 Copy the example config:
 
 ```bash
 cp examples/config.example.yaml config.yaml
 ```
 
-Update:
+Update these fields in `config.yaml`:
 
 - `endpoint.url`
 - `endpoint.headers`
@@ -92,7 +129,7 @@ sample_inputs:
   - "Summarize the quarterly update in two bullets."
 ```
 
-## Current CLI Output
+## Current Output
 
 ```text
 $ breakmybot test config.yaml
@@ -109,6 +146,25 @@ Sample inputs: 4
 CLI scaffold is ready.
 TODO: implement request mutation, endpoint execution, schema validation, and detailed report generation.
 ```
+
+## Current Status
+
+The repo is honest about its state.
+
+Today it includes:
+
+- the Python CLI entrypoint
+- YAML config loading and validation
+- example config and local smoke path
+- docs and marketing site
+- GitHub CI and basic OSS repo setup
+
+Not implemented yet:
+
+- request mutation engine
+- real endpoint execution
+- response validation against returned payloads
+- report generation with concrete failing cases
 
 ## Local Development
 
@@ -133,7 +189,7 @@ cd apps/web
 npm run build
 ```
 
-## Project Layout
+## Repository Layout
 
 ```text
 .
@@ -155,10 +211,13 @@ Before opening a PR, run:
 ```bash
 pip install -e .
 python -m breakmybot test examples/config.example.yaml
-cd apps/web && npm install && npm run build
+cd apps/web
+npm install
+npm run build
 ```
 
-Keep changes scoped to the current product direction: a CLI-first tool for testing single-call AI APIs.
+Keep changes aligned with the current product direction: a CLI-first tool for
+testing single-call AI APIs.
 
 ## Roadmap
 
@@ -167,10 +226,6 @@ Keep changes scoped to the current product direction: a CLI-first tool for testi
 - validate returned payloads against response schema hints
 - generate useful failure and instability reports
 - publish the CLI to PyPI when the runner is stable
-
-## Scope Note
-
-BreakMyBot is currently focused on single-call AI API testing. Multi-turn chatbot testing is future work.
 
 ## License
 
