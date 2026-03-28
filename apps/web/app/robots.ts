@@ -10,9 +10,10 @@ export default function robots(): MetadataRoute.Robots {
         allow: [
           "/",
           "/docs/installation",
+          "/docs/provider-setup",
           "/docs/quickstart",
-          "/docs/config-format",
-          "/docs/example-usage",
+          "/docs/local-studio",
+          "/docs/example-run",
         ],
       },
     ],

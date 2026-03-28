@@ -3,3 +3,5 @@ __pycache__/
 *.egg-info/
 apps/web/.next/
 apps/web/node_modules/
+apps/studio/.next/
+apps/studio/node_modules/

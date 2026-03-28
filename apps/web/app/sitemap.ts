@@ -15,17 +15,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly" as const,
     },
     {
+      path: "/docs/provider-setup",
+      priority: 0.8,
+      changeFrequency: "monthly" as const,
+    },
+    {
       path: "/docs/quickstart",
       priority: 0.8,
       changeFrequency: "monthly" as const,
     },
     {
-      path: "/docs/config-format",
+      path: "/docs/local-studio",
       priority: 0.8,
       changeFrequency: "monthly" as const,
     },
     {
-      path: "/docs/example-usage",
+      path: "/docs/example-run",
       priority: 0.8,
       changeFrequency: "monthly" as const,
     },

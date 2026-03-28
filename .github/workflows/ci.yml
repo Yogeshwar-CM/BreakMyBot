@@ -23,7 +23,7 @@ jobs:
         run: pip install -e .
 
       - name: Run CLI smoke test
-        run: python -m breakmybot test examples/config.example.yaml
+        run: python -m breakmybot doctor --config-home /tmp/breakmybot-ci
 
   web:
     runs-on: ubuntu-latest
@@ -45,4 +45,26 @@ jobs:
 
       - name: Build docs site
         working-directory: apps/web
+        run: npm run build
+
+  studio:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: apps/studio/package-lock.json
+
+      - name: Install studio dependencies
+        working-directory: apps/studio
+        run: npm ci
+
+      - name: Build studio
+        working-directory: apps/studio
         run: npm run build

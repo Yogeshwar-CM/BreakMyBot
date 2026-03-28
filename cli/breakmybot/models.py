@@ -1,37 +1,54 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any
+from dataclasses import dataclass
+from typing import Literal
+
+ProviderName = Literal["openai", "anthropic", "groq"]
 
 
 @dataclass(slots=True)
-class EndpointConfig:
-    url: str
-    method: str = "POST"
-    headers: dict[str, str] = field(default_factory=dict)
+class ProviderCatalogEntry:
+    name: ProviderName
+    display_name: str
+    default_model: str
+    base_url: str
 
 
 @dataclass(slots=True)
-class RequestConfig:
-    template: dict[str, Any]
-    variable: str
+class RuntimeConfig:
+    provider: ProviderName
+    api_key: str
+    model: str
+    base_url: str
+    created_at: str
+    updated_at: str
 
 
 @dataclass(slots=True)
-class ExpectationsConfig:
-    response_schema: dict[str, Any] | None = None
+class RuntimeConfigSummary:
+    configured: bool
+    config_path: str
+    provider: ProviderName | None = None
+    model: str | None = None
 
 
-@dataclass(slots=True)
-class RunConfig:
-    iterations: int = 10
-    mutations: list[str] = field(default_factory=list)
-
-
-@dataclass(slots=True)
-class BreakMyBotConfig:
-    endpoint: EndpointConfig
-    request: RequestConfig
-    expectations: ExpectationsConfig
-    run: RunConfig
-    sample_inputs: list[str]
+PROVIDER_CATALOG: dict[ProviderName, ProviderCatalogEntry] = {
+    "openai": ProviderCatalogEntry(
+        name="openai",
+        display_name="OpenAI",
+        default_model="gpt-4o-mini",
+        base_url="https://api.openai.com/v1",
+    ),
+    "anthropic": ProviderCatalogEntry(
+        name="anthropic",
+        display_name="Anthropic",
+        default_model="claude-3-5-haiku-latest",
+        base_url="https://api.anthropic.com/v1",
+    ),
+    "groq": ProviderCatalogEntry(
+        name="groq",
+        display_name="Groq",
+        default_model="llama-3.3-70b-versatile",
+        base_url="https://api.groq.com/openai/v1",
+    ),
+}

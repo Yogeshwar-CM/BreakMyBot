@@ -2,52 +2,56 @@ import type { Metadata } from "next";
 
 import { CodePanel } from "@/components/site/code-panel";
 import { DocShell } from "@/components/site/doc-shell";
-import { cliCommand, sampleConfig } from "@/lib/docs";
+import { sampleReport, setupCommand, uiCommand } from "@/lib/docs";
 import { buildMetadata } from "@/lib/site";
 
 export const metadata: Metadata = buildMetadata({
   title: "Quickstart",
   path: "/docs/quickstart",
-  description: "Quickstart guide for running BreakMyBot against a single-call AI API.",
+  description:
+    "Quickstart guide for setting up BreakMyBot, launching the local studio, and running the agent.",
 });
-
-const envExample = String.raw`export AI_API_TOKEN="replace-me"`;
 
 export default function QuickstartPage() {
   return (
     <DocShell
       currentPath="/docs/quickstart"
       eyebrow="Docs"
-      summary="The shortest useful path is: define a YAML config, set the token in your shell, and run the CLI locally against the target endpoint."
+      summary="The shortest useful path is: install the CLI, choose the agent provider, launch the local studio, configure the target endpoint, and let BreakMyBot run the session."
       title="Quickstart"
     >
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold tracking-[-0.04em] text-white">
-          1. Create the config
+          1. Configure the agent provider
         </h2>
         <p className="text-base leading-8 text-white/62">
-          Start with a small config that targets one endpoint, one request
-          template, and a handful of representative sample inputs.
+          Pick OpenAI, Anthropic, or Groq and store the provider key locally so
+          BreakMyBot can use an actual reasoning model to plan tests.
         </p>
-        <CodePanel code={sampleConfig} label="config.yaml" />
+        <CodePanel code={setupCommand} label="breakmybot setup" />
       </section>
 
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold tracking-[-0.04em] text-white">
-          2. Export your token
+          2. Launch the local studio
         </h2>
-        <CodePanel code={envExample} label="shell" />
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="text-2xl font-semibold tracking-[-0.04em] text-white">
-          3. Run the CLI
-        </h2>
-        <CodePanel code={cliCommand} label="command" />
         <p className="text-base leading-8 text-white/62">
-          The current repo includes the CLI scaffold and config loading path.
-          Request mutation, endpoint execution, and detailed report generation
-          are the next implementation steps.
+          The public docs site and the local studio are separate. The studio is
+          the Postman-style UI where you configure the target endpoint under
+          test.
+        </p>
+        <CodePanel code={uiCommand} label="breakmybot ui" />
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-2xl font-semibold tracking-[-0.04em] text-white">
+          3. Review the first report
+        </h2>
+        <CodePanel code={sampleReport} label="sample report" />
+        <p className="text-base leading-8 text-white/62">
+          BreakMyBot should show the attack families it chose, the cases it
+          injected, and where the endpoint produced malformed, unstable, or
+          schema-breaking behavior.
         </p>
       </section>
     </DocShell>

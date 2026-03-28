@@ -4,7 +4,7 @@ export const siteConfig = {
   name: "BreakMyBot",
   defaultTitle: "Stress test your AI API before production",
   description:
-    "An open-source CLI for finding instability, schema failures, and edge-case breakdowns in single-call AI endpoints.",
+    "An open-source CLI that lets you configure an AI provider, launch a local studio, and use an adaptive agent to break single-call AI APIs before production.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.breakmybot.com",
   repoUrl:
     process.env.NEXT_PUBLIC_GITHUB_URL ??
@@ -20,12 +20,15 @@ export const siteConfig = {
     "AI API instability testing",
     "AI endpoint testing",
     "CLI for AI APIs",
+    "AI agent API testing",
+    "local AI API testing studio",
   ],
   docs: {
     installation: "/docs/installation",
+    providerSetup: "/docs/provider-setup",
     quickstart: "/docs/quickstart",
-    configFormat: "/docs/config-format",
-    exampleUsage: "/docs/example-usage",
+    localStudio: "/docs/local-studio",
+    exampleRun: "/docs/example-run",
   },
 } as const;
 

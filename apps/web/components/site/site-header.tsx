@@ -21,11 +21,14 @@ export function SiteHeader() {
           <Link className="transition-colors hover:text-white" href="/docs/installation">
             Installation
           </Link>
+          <Link className="transition-colors hover:text-white" href="/docs/provider-setup">
+            Provider Setup
+          </Link>
           <Link className="transition-colors hover:text-white" href="/docs/quickstart">
             Quickstart
           </Link>
-          <Link className="transition-colors hover:text-white" href="/docs/config-format">
-            Config
+          <Link className="transition-colors hover:text-white" href="/docs/local-studio">
+            Local Studio
           </Link>
         </nav>
 

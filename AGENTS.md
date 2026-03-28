@@ -4,7 +4,9 @@ You are helping build **BreakMyBot**.
 
 ## Product Summary
 
-BreakMyBot is an open-source CLI for stress testing single-call AI APIs before production.
+BreakMyBot is an open-source CLI that asks the user for an AI provider, stores
+that provider config locally, launches a separate local studio UI, and uses an
+agent to stress test single-call AI APIs before production.
 
 Primary promise:
 
@@ -30,6 +32,17 @@ It works best for APIs such as:
 - structured JSON generators
 - evaluator/judge endpoints
 
+Core flow:
+
+1. User installs `breakmybot`
+2. User runs `breakmybot setup`
+3. User chooses provider and adds the provider API key
+4. User runs `breakmybot ui`
+5. Local studio opens
+6. User enters the target endpoint, auth, request format, and optional response contract
+7. BreakMyBot's agent plans and runs probes
+8. Local report shows failures and breakpoints
+
 ## Non-Goals
 
 Do not position or build BreakMyBot as:
@@ -54,18 +67,21 @@ Do not build:
 ## Product Principles
 
 1. **CLI-first**
-   The CLI is the core product. The website exists to explain, document, and drive GitHub adoption.
+   The CLI is the entrypoint. It handles provider setup and launches the local studio.
 
-2. **Black-box first**
+2. **Local-first**
+   The testing UI is a separate local app, not a hosted dashboard.
+
+3. **Black-box first**
    Use only what the external API exposes.
 
-3. **Small and useful**
-   Prefer a smaller clean implementation over broad scaffolding.
+4. **Agent-driven**
+   The testing logic should use the configured provider to think through attacks, not just replay a fixed mutation list.
 
-4. **Concrete output**
+5. **Concrete output**
    Reports should show failures, instability, and breakpoints with useful examples.
 
-5. **Open-source friendly**
+6. **Open-source friendly**
    Keep the repo understandable, runnable, and easy to modify locally.
 
 ## Website Direction
@@ -75,8 +91,9 @@ The website should:
 - explain what BreakMyBot does
 - show why it is useful
 - link to GitHub
-- link to installation and quickstart docs
-- avoid pretending there is a hosted app
+- link to installation, provider setup, and local studio docs
+- avoid pretending there is a hosted dashboard
+- clearly explain that the actual testing flow happens in the separate local studio
 
 Tone:
 
@@ -93,6 +110,7 @@ Prefer a structure like:
 /
   apps/
     web/
+    studio/
   cli/
   README.md
 ```
@@ -101,11 +119,11 @@ Remove dead SaaS-era code when it is no longer relevant.
 
 ## Implementation Priorities
 
-1. CLI package and config flow
-2. README and docs
-3. Docs/marketing site
-4. Request mutation and endpoint execution
-5. Local report generation
+1. CLI setup flow
+2. Local studio
+3. Agent planning and endpoint execution
+4. Local report generation
+5. Docs/marketing site
 
 ## Output Style
 

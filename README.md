@@ -1,14 +1,17 @@
 <div align="center">
   <h1>BreakMyBot</h1>
-  <p><strong>Stress test your AI API before production.</strong></p>
+  <p><strong>Let an AI agent break your AI API before production does.</strong></p>
   <p>
-    An open-source CLI for finding instability, schema failures, malformed
-    responses, and edge-case breakdowns in single-call AI endpoints.
+    BreakMyBot is an open-source CLI that asks for your AI provider, launches a
+    separate local studio, and uses adaptive planning to stress test
+    single-call AI endpoints.
   </p>
   <p>
     <a href="https://www.breakmybot.com">Website</a>
     ·
     <a href="https://www.breakmybot.com/docs/quickstart">Quickstart</a>
+    ·
+    <a href="https://www.breakmybot.com/docs/local-studio">Local Studio</a>
     ·
     <a href="https://github.com/Yogeshwar-CM/BreakMyBot/issues">Issues</a>
   </p>
@@ -16,162 +19,185 @@
     <img alt="CI" src="https://img.shields.io/github/actions/workflow/status/Yogeshwar-CM/BreakMyBot/ci.yml?branch=main&label=ci" />
     <img alt="License" src="https://img.shields.io/github/license/Yogeshwar-CM/BreakMyBot" />
     <img alt="Python" src="https://img.shields.io/badge/python-3.11%2B-0f172a" />
-    <img alt="Status" src="https://img.shields.io/badge/status-CLI%20scaffold-334155" />
+    <img alt="Status" src="https://img.shields.io/badge/status-agent%20studio%20scaffold-334155" />
   </p>
 </div>
 
 ## What is BreakMyBot?
 
-BreakMyBot is a CLI-first developer tool for stress testing single-call AI APIs.
+BreakMyBot is a local-first developer tool for testing single-call AI APIs.
 
-You point it at an external endpoint, define a request template, describe the
-response shape you expect, and run repeated or mutated tests locally to expose
-where the API becomes unreliable.
+The flow is:
 
-It is built for endpoints like:
+1. Install `breakmybot`
+2. Choose the AI provider BreakMyBot should use for reasoning
+3. Launch a separate local studio UI
+4. Enter the target endpoint, auth, request shape, and optional response shape
+5. Let the agent plan probes, run them, and report where the endpoint breaks
+
+BreakMyBot works well for:
 
 - scorers
 - classifiers
 - extractors
-- moderation APIs
+- moderation endpoints
 - structured JSON generators
 - evaluators and judges
 
-## What does it help find?
-
-- inconsistent outputs across repeated runs
-- schema mismatches and missing fields
-- malformed or invalid JSON responses
-- sensitivity to small input changes
-- edge-case breakdowns on short, noisy, empty, or ambiguous inputs
-
-## What is it not for?
+It is not for:
 
 - multi-turn chat systems
 - browser automation
 - chatbot UI scraping
 - full agent workflows
 
-## How it works
+## Why it exists
 
-1. Define a YAML config with the endpoint, headers, request template, and sample inputs.
-2. Run `breakmybot test config.yaml`.
-3. Inspect the failures, instability, and schema issues before production traffic hits the API.
+AI APIs often look fine in a few manual requests and still fail when inputs get
+noisy, malformed, ambiguous, or only slightly different.
+
+BreakMyBot is built to catch things like:
+
+- malformed JSON responses
+- schema mismatches and missing fields
+- retry instability
+- output drift across small wording changes
+- edge-case breakdowns on empty, noisy, or boundary inputs
 
 ## Quickstart
 
 Requirements:
 
 - Python 3.11+
-- Node.js 20+ only if you want to run the docs site locally
+- Node.js 20+
+- one provider key for BreakMyBot itself: OpenAI, Anthropic, or Groq
 
-Install the CLI from source:
+Install from source:
 
 ```bash
+git clone https://github.com/Yogeshwar-CM/BreakMyBot.git
+cd BreakMyBot
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
 ```
 
-Copy the example config:
+Choose the provider BreakMyBot should use for agent reasoning:
 
 ```bash
-cp examples/config.example.yaml config.yaml
+breakmybot setup
 ```
 
-Update these fields in `config.yaml`:
-
-- `endpoint.url`
-- `endpoint.headers`
-- `request.template`
-- `request.variable`
-
-Run the CLI:
+Launch the separate local studio:
 
 ```bash
-breakmybot test config.yaml
+breakmybot ui
 ```
 
-## Example Config
+The local studio runs separately from the public docs site and is where you:
 
-```yaml
-endpoint:
-  url: https://api.example.com/v1/score
-  method: POST
-  headers:
-    Authorization: Bearer ${AI_API_TOKEN}
+- enter the target endpoint URL
+- add target auth headers
+- define the request template and variable input path
+- optionally add a response schema
+- run the agent and inspect the report
 
-request:
-  template:
-    input:
-      text: "{{text}}"
-  variable: input.text
-
-expectations:
-  response_schema:
-    type: object
-    required:
-      - label
-      - score
-
-run:
-  iterations: 12
-  mutations:
-    - paraphrase
-    - typo
-    - boundary_length
-    - punctuation
-
-sample_inputs:
-  - "This product launch copy sounds safe and polished."
-  - "worst experience ever???"
-  - ""
-  - "Summarize the quarterly update in two bullets."
-```
-
-## Current Output
+## Example setup flow
 
 ```text
-$ breakmybot test config.yaml
+$ breakmybot setup
+
+Choose the provider BreakMyBot should use for agent reasoning:
+  1. OpenAI (gpt-4o-mini)
+  2. Anthropic (claude-3-5-haiku-latest)
+  3. Groq (llama-3.3-70b-versatile)
+
+Provider number: 1
+OpenAI API key: ********************
 
 BreakMyBot 0.1.0
-Config: config.yaml
-Target: https://api.example.com/v1/score
-Method: POST
-Variable field: input.text
-Iterations: 12
-Mutations: paraphrase, typo, boundary_length, punctuation
-Sample inputs: 4
+Local agent runtime configured.
+Provider: OpenAI
+Model: gpt-4o-mini
+Base URL: https://api.openai.com/v1
 
-CLI scaffold is ready.
-TODO: implement request mutation, endpoint execution, schema validation, and detailed report generation.
+Next: run `breakmybot ui` to launch the local studio.
 ```
 
-## Current Status
+## Example target contract
 
-The repo is honest about its state.
+```json
+{
+  "endpointUrl": "https://api.example.com/v1/moderate",
+  "method": "POST",
+  "headers": {
+    "Authorization": "Bearer target-api-key"
+  },
+  "requestTemplate": {
+    "input": {
+      "text": "{{input}}"
+    }
+  },
+  "variablePath": "input.text",
+  "responseSchema": {
+    "type": "object",
+    "required": ["label", "score"]
+  }
+}
+```
 
-Today it includes:
+## Example report
 
-- the Python CLI entrypoint
-- YAML config loading and validation
-- example config and local smoke path
-- docs and marketing site
-- GitHub CI and basic OSS repo setup
+```text
+BreakMyBot report
 
-Not implemented yet:
+Provider: openai / gpt-4o-mini
+Mode: live plan
+Target: POST https://api.example.com/v1/moderate
 
-- request mutation engine
-- real endpoint execution
-- response validation against returned payloads
-- report generation with concrete failing cases
+Attack families
+- semantic drift
+- schema pressure
+- malformed structure
+- retry instability
 
-## Local Development
+Summary
+- 6 cases executed
+- 2 malformed JSON responses
+- 1 schema mismatch
+- 2 retry drift signals
+```
 
-Run the CLI smoke path:
+## Current status
+
+This repo already includes:
+
+- `breakmybot setup` for provider selection and local API key storage
+- `breakmybot ui` for launching the separate local studio app
+- a Next.js local studio for configuring the target endpoint
+- provider-backed planning with OpenAI, Anthropic, and Groq
+- target probing, basic schema checks, and retry drift detection
+- a separate Next.js docs and marketing site
+
+Still TODO:
+
+- deeper report analysis and richer diffing
+- stronger secret handling beyond local file permissions
+- packaged distribution for the local studio outside source installs
+- broader provider coverage and more advanced validation layers
+
+## Local development
+
+Install the CLI in editable mode:
 
 ```bash
-.venv/bin/python -m breakmybot test examples/config.example.yaml
+.venv/bin/pip install -e .
+```
+
+Smoke-check the CLI:
+
+```bash
+.venv/bin/python -m breakmybot doctor --config-home /tmp/breakmybot-ci
 ```
 
 Run the docs site:
@@ -182,20 +208,21 @@ npm install
 npm run dev
 ```
 
-Build the docs site:
+Run the local studio directly:
 
 ```bash
-cd apps/web
-npm run build
+cd apps/studio
+npm install
+npm run dev
 ```
 
-## Repository Layout
+## Repository layout
 
 ```text
 .
-|-- apps/web              # Next.js docs and marketing site
-|-- cli/breakmybot        # Python CLI package
-|-- examples              # Sample configs
+|-- apps/web              # Public docs and marketing site
+|-- apps/studio           # Separate local studio UI
+|-- cli/breakmybot        # Python CLI
 |-- .github               # CI, issue templates, PR template
 |-- LICENSE
 |-- README.md
@@ -210,22 +237,17 @@ Before opening a PR, run:
 
 ```bash
 pip install -e .
-python -m breakmybot test examples/config.example.yaml
-cd apps/web
-npm install
-npm run build
+python -m breakmybot doctor --config-home /tmp/breakmybot-ci
+cd apps/web && npm install && npm run build
+cd ../studio && npm install && npm run build
 ```
 
-Keep changes aligned with the current product direction: a CLI-first tool for
-testing single-call AI APIs.
+Keep changes aligned with the current product direction:
 
-## Roadmap
-
-- implement request mutation strategies
-- execute repeated tests against real endpoints
-- validate returned payloads against response schema hints
-- generate useful failure and instability reports
-- publish the CLI to PyPI when the runner is stable
+- CLI-first
+- local-first
+- provider-backed agent planning
+- single-call AI endpoint testing
 
 ## License
 
