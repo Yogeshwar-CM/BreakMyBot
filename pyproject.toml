@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "breakmybot"
+version = "0.1.0"
+description = "Open-source CLI for stress testing single-call AI APIs before production."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+dependencies = [
+  "PyYAML>=6.0,<7.0",
+]
+
+[project.urls]
+Homepage = "https://www.breakmybot.com"
+Documentation = "https://www.breakmybot.com/docs/quickstart"
+Source = "https://github.com/Yogeshwar-CM/BreakMyBot"
+Issues = "https://github.com/Yogeshwar-CM/BreakMyBot/issues"
+
+[project.scripts]
+breakmybot = "breakmybot.cli:main"
+
+[tool.setuptools.package-dir]
+"" = "cli"
+
+[tool.setuptools.packages.find]
+where = ["cli"]
+include = ["breakmybot*"]

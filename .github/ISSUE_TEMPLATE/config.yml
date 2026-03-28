@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://www.breakmybot.com/docs/quickstart
+    about: Start with the repo docs before opening an issue.
